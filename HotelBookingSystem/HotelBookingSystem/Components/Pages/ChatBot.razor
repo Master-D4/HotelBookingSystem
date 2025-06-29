@@ -1,15 +1,13 @@
 @page "/chat"
+@rendermode InteractiveServer
 
 @using HotelBookingSystem.Services
 @inject PredictionEngine Engine
 
-@using Microsoft.AspNetCore.Components.Forms
-
 <h3>ChatBot</h3>
 
 <InputText @bind-Value="question"></InputText>
-@* <button @onclick="AskBot">Ask</button> *@
-<button @onclick="AskBot">ASk</button>
+<button class="btn btn-primary" @onclick="AskBot">ASk</button>
 
 <p><strong>Bot:</strong> @response</p>
 
