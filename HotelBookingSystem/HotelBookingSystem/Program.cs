@@ -1,10 +1,15 @@
 using HotelBookingSystem.Components;
+using HotelBookingSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//Register Services
+builder.Services.AddSingleton<MemoryStore>();
+builder.Services.AddSingleton<PredictionEngine>();
 
 var app = builder.Build();
 
