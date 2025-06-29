@@ -1,0 +1,34 @@
+@page "/newBooking"
+
+@inject NavigationManager Nav
+@using HotelBookingSystem.Services
+@inject MemoryStore Store
+
+<h3>NewBooking</h3>
+
+<EditForm method="post" formname="newBookingForm" Model="@booking" OnSubmit="SaveBooking" class="form-control">
+    <InputDate @bind-Value="booking.CheckIn" />
+    <InputDate @bind-Value="booking.CheckOut" />
+    <InputSelect @bind-Value="booking.RoomType">
+        @foreach (var rt in Store.RoomTypes)
+        {
+            <option value="@rt.Name">
+                @rt.Name
+            </option>
+        }
+    </InputSelect>
+    <InputTextArea @bind-Value="booking.SpecialRequest" />
+    <InputCheckbox @bind-Value="booking.IsRecurring" />
+    
+    <button type="submit">Save</button>
+</EditForm>
+
+@code {
+    Models.Booking booking = new();
+    
+    void SaveBooking()
+    {
+        Store.Bookings.Add(booking);
+        Nav.NavigateTo("/bookings");
+    }
+}
