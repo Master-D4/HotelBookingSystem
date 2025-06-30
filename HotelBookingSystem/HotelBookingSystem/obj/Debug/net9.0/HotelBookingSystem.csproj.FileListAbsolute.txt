@@ -72,5 +72,6 @@
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/HotelBookingSystem.genruntimeconfig.cache
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/ref/HotelBookingSystem.dll
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/scopedcss/Components/Pages/Booking.razor.rz.scp.css
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-jfvp36rvb6.gz
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-jfvp36rvb6.gz
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/scopedcss/Components/Pages/RoomTypes.razor.rz.scp.css
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-ai2hr19t2z.gz
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-ai2hr19t2z.gz

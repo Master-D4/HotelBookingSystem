@@ -1,0 +1,183 @@
+@page "/roomTypes"
+@rendermode InteractiveServer
+
+@using HotelBookingSystem.Models
+@using HotelBookingSystem.Services
+@inject MemoryStore Store
+@inject ToastService ToastService
+@inject NavigationManager Nav
+
+<h3 class="mb-4">Mange Rooms Types</h3>
+
+@* ADD & EDIT FORM *@
+<EditForm Model="@roomTypeModal" OnValidSubmit="HandleSave" OnInvalidSubmit="HandleInvalid" class="form-control mb-4">
+    <DataAnnotationsValidator />
+    
+    <div class="mb-3">
+        <label class="form-label">Room Type Name</label>
+        <InputText class="form-control" @bind-Value="roomTypeModal.Name" />
+        <ValidationMessage For="@(() => roomTypeModal.Name)" class="text-danger small" />
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Base Price</label>
+        <InputNumber class="form-control" @bind-Value="roomTypeModal.BasePrice" />
+        <ValidationMessage For="@(() => roomTypeModal.BasePrice)" class="text-danger small" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @(isEdit ? "Update Room Type" : "Add Room Type")
+    </button>
+
+    @if (isEdit)
+    {
+        <button class="btn btn-outline-secondary ms-2" @onclick="ResetForm">
+            Cancel
+        </button>
+    }
+</EditForm>
+
+@* TABLE VIEW LIST *@
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Base Price</th>
+        <th class="text-end">Options</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Store.RoomTypes.Count == 0)
+    {
+        <tr>
+            <td colspan="2" class="text-center text-muted">
+                No room types available.
+            </td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var rt in Store.RoomTypes)
+        {
+            <tr>
+                <td>@rt.Name</td>
+                <td>@rt.BasePrice</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary me-2" @onclick="() => EditRoomType(rt)">
+                        Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(rt.Name)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+
+@* Confirmation alert *@
+@if (showConfirm)
+{
+    <div class="modal fade show d-block confirmationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" @onclick="() => showConfirm = false"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this room type?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="() => showConfirm = false">
+                        Cancel
+                    </button>
+                    <button class="btn btn-danger" @onclick="DeleteRoomType">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    Models.RoomType roomTypeModal = new();
+    bool isEdit = false;
+    bool showConfirm = false;
+    string? deleteTargetId;
+    string? editingName;
+
+    void HandleInvalid()
+    {
+        ToastService.ShowToast("Please fill required fileds!", ToastType.Warning);
+    }
+
+    void HandleSave()
+    {
+        if (isEdit)
+        {
+            var existing = Store.RoomTypes.FirstOrDefault(rt => rt.Name == editingName);
+            if (existing != null)
+            {
+                existing.Name = roomTypeModal.Name;
+                existing.BasePrice = roomTypeModal.BasePrice;
+                ToastService.ShowToast("Room type updated!", ToastType.Success);
+            }
+        }
+        else
+        {
+            if (Store.RoomTypes.Any(rt => rt.Name.Equals(roomTypeModal.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                ToastService.ShowToast("Room type already exists", ToastType.Warning);
+                return;
+            }
+            
+            Store.RoomTypes.Add(new Models.RoomType { Name = roomTypeModal.Name });
+            ToastService.ShowToast("Room type added successfully!", ToastType.Success);
+        }
+
+        ResetForm();
+    }
+
+    void ResetForm()
+    {
+        // roomTypeModal = new RoomType();
+        isEdit = false;
+        editingName = null;
+        Nav.NavigateTo("/roomTypes", true);
+    }
+
+    void EditRoomType(RoomType rt)
+    {
+        roomTypeModal = new RoomType
+        {
+            Name = rt.Name,
+            BasePrice = rt.BasePrice
+        };
+        editingName = rt.Name;
+        isEdit = true;
+    }
+
+    void ConfirmDelete(string name)
+    {
+        deleteTargetId = name;
+        showConfirm = true;
+    }
+
+    void DeleteRoomType()
+    {
+        var item = Store.RoomTypes.FirstOrDefault(rt => rt.Name == deleteTargetId);
+        if (item != null)
+        {
+            Store.RoomTypes.Remove(item);
+            ToastService.ShowToast("Room type deleted!", ToastType.Success);
+        }
+
+        showConfirm = false;
+        deleteTargetId = null;
+    }
+}

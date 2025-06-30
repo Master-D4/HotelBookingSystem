@@ -221,3 +221,15 @@ main[b-xq6mpftdbk] {
         accent-color: green;
     }
 }
+/* _content/HotelBookingSystem/Components/Pages/RoomTypes.razor.rz.scp.css */
+/*.confirmationModal {*/
+/*    background: rgba(0, 0, 0, 0.5);*/
+/*    position: fixed;*/
+/*    inset: 0;*/
+/*    z-index: 1050;*/
+/*}*/
+
+.confirmationModal[b-oqlc9e7e6f] {
+    backdrop-filter: brightness(0.8);
+    padding-top: 15%;
+}
