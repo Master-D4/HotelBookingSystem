@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 //Register Services
 builder.Services.AddSingleton<MemoryStore>();
 builder.Services.AddSingleton<PredictionEngine>();
+builder.Services.AddScoped<ToastService>();
 
 var app = builder.Build();
 

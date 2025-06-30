@@ -1,0 +1,12 @@
+.confirmationModal {
+    backdrop-filter: brightness(0.8); 
+    padding-top: 15%;
+}
+
+.checkboxContainer {
+    text-align: left;
+
+    .checkboxItem {
+        transform: scale(1.4);
+    }
+}

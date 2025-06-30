@@ -1,36 +1,111 @@
 @page "/bookings"
+@rendermode InteractiveServer
 
 @using HotelBookingSystem.Services
 @inject MemoryStore Store
+@inject ToastService ToastService
 
 <h3>Bookings</h3>
 
-<table class="table">
+@* Booking information (Table viw) *@
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Room</th>
         <th>Check-In</th>
         <th>Check-Out</th>
         <th>Special Request</th>
+        <th>Is Recurring</th>
+        <th>Options</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var b in Store.Bookings)
-    {
-        <tr>
-            <td>@b.RoomType</td>
-            <td>@b.CheckIn</td>
-            <td>@b.CheckOut</td>
-            <td>@b.SpecialRequest</td>
-        </tr>
-    }
+        @if (Store.Bookings.Count == 0)
+        {
+            <tr>
+                <td colspan="12" class="text-center text-muted">
+                    No bookings available
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var b in Store.Bookings)
+            {
+                <tr>
+                    <td>@b.RoomType</td>
+                    <td>@b.CheckIn</td>
+                    <td>@b.CheckOut</td>
+                    <td>@b.SpecialRequest</td>
+                    <td class="checkboxContainer">
+                        <input class="checkboxItem" type="checkbox" disabled @checked="@b.IsRecurring" />
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary me-2" href="/editBooking/@b.bookingId">
+                            Edit
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(b.bookingId)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
 
+@* For new booking add (btn) *@
 <a class="btn btn-primary" href="/newBooking">
     Add Booking
 </a>
 
+@* Booking delete confirmation *@
+@if (showConfirm)
+{
+    <div class="modal fade show d-block confirmationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Confirm Delete
+                    </h5>
+                    <button type="button" class="btn-close" @onclick="() => showConfirm = false"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to delete this booking?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="() => showConfirm = false">
+                        Cancel
+                    </button>
+                    <button class="btn btn-danger" @onclick="DeleteBooking">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
+    bool showConfirm = false;
+    Guid bookingToDelete; //Selected booking id for delete
+
+    void ConfirmDelete(Guid id)
+    { 
+        bookingToDelete = id;
+        showConfirm = true;
+    }
     
+    void DeleteBooking()
+    {
+        var booking = Store.Bookings.FirstOrDefault(b => b.bookingId == bookingToDelete);
+        if (booking != null)
+        {
+            Store.Bookings.Remove(booking);
+            ToastService.ShowToast("Booking deleted successfully", ToastType.Success);
+            Console.WriteLine("Toast call issued");
+        }
+        showConfirm = false;
+    }
 }

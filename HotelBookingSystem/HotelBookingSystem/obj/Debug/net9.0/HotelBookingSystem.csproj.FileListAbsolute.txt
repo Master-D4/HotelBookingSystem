@@ -62,8 +62,6 @@
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/ajxb8fyd4g-h1s4sie4z3.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/dqgoa9p7iz-63fj8s7r0e.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/mveyfy4gjm-0j3bgjxly4.gz
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-cce46d5v54.gz
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-cce46d5v54.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/staticwebassets.build.json
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/staticwebassets.build.json.cache
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/staticwebassets.development.json
@@ -73,3 +71,6 @@
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/HotelBookingSystem.pdb
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/HotelBookingSystem.genruntimeconfig.cache
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/ref/HotelBookingSystem.dll
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/scopedcss/Components/Pages/Booking.razor.rz.scp.css
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-dx4zcjmyj4.gz
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-dx4zcjmyj4.gz

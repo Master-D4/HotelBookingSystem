@@ -24,10 +24,6 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/Pages/Booking.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Cb29raW5nLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/Pages/ChatBot.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9DaGF0Qm90LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
@@ -60,6 +56,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Sb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/Toast.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Ub2FzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9fSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -71,3 +71,7 @@ build_metadata.AdditionalFiles.CssScope = b-xq6mpftdbk
 [/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-3uz228u8xe
+
+[/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/Components/Pages/Booking.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Cb29raW5nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-xc8be9dgl0

@@ -1,0 +1,12 @@
+.confirmationModal[b-xc8be9dgl0] {
+    backdrop-filter: brightness(0.8); 
+    padding-top: 15%;
+}
+
+.checkboxContainer[b-xc8be9dgl0] {
+    text-align: left;
+
+    .checkboxItem {
+        transform: scale(1.4);
+    }
+}

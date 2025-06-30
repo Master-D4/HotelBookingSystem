@@ -1,0 +1,54 @@
+@using HotelBookingSystem.Services
+@inject ToastService ToastService
+@rendermode InteractiveServer
+
+@if (visible)
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div class="toast show text-white @GetTypeClass()" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @message
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        @onclick="() => visible = false"></button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string message = "";
+    private ToastType type;
+    private bool visible = false;
+    private Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += ShowToast;
+    }
+
+    private void ShowToast(string msg, ToastType toastType)
+    {
+        message = msg;
+        type = toastType;
+        visible = true;
+
+        timer?.Dispose();
+        timer = new Timer(_ =>
+        {
+            visible = false;
+            InvokeAsync(StateHasChanged);
+        }, null,3000, Timeout.Infinite);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private string GetTypeClass() => type switch
+    {
+        ToastType.Success => "bg-success",
+        ToastType.Info => "bg-info",
+        ToastType.Warning => "bg-warning",
+        ToastType.Error => "bg-danger",
+        _ => "bg-secondary"
+    };
+}
