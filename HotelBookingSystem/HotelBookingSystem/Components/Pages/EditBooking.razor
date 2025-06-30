@@ -1,0 +1,108 @@
+@page "/editBooking/{id:guid}"
+@rendermode InteractiveServer
+
+@using HotelBookingSystem.Services
+@inject MemoryStore Store
+@inject ToastService ToastService
+@inject NavigationManager Nav
+
+<h3 class="mb-4">Edit Booking</h3>
+
+@if (booking == null)
+{
+    <p class="text-danger">
+        Booking not found!
+    </p>
+}
+else
+{
+    <EditForm Model="@booking" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" class="form-control">
+        <DataAnnotationsValidator />
+        
+        <div class="mb-3">
+            <label class="form-label">
+                Check-In Date
+            </label>
+            <InputDate class="form-control" @bind-Value="booking.CheckIn"/>
+            <ValidationMessage For="@(() => booking.CheckIn)" class="text-danger small" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">
+                Check-Out Date
+            </label>
+            <InputDate class="form-control" @bind-Value="booking.CheckOut"/>
+            <ValidationMessage For="@(() => booking.CheckOut)" class="text-danger small" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">
+                Room Type
+            </label>
+            <InputSelect class="form-select" @bind-Value="booking.RoomType">
+                <option disabled value="">
+                    -- Select a room type --
+                </option>
+                @foreach (var rt in Store.RoomTypes)
+                {
+                    <option value="@rt.Name">
+                        @rt.Name
+                    </option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => booking.RoomType)" class="text-danger small" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">
+                Special Request
+            </label>
+            <InputTextArea class="form-control" @bind-Value="booking.SpecialRequest" rows="3"/>
+        </div>
+
+        <div class="mb-3">
+            @* <InputCheckbox class="form-check-input" id="recurringCheck" @bind-Value="booking.IsRecurring"></InputCheckbox> *@
+            <label class="form-check-label">
+                Is this a recurring booking?
+            </label>
+            <InputSelect class="form-select" @bind-Value="booking.IsRecurring">
+                <option value="" disabled>-- Please select --</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => booking.IsRecurring)" class="text-danger small" />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">
+            Update Booking
+        </button>
+
+        <a href="/bookings" class="btn btn-outline-secondary ms-2 mt-3">
+            Cancel
+        </a>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Guid id { get; set; }
+
+    Models.Booking? booking;
+
+    protected override void OnInitialized()
+    {
+        booking = Store.Bookings.FirstOrDefault(b => b.bookingId == id);
+    }
+
+    async void HandleValidSubmit()
+    {
+        ToastService.ShowToast("Booking updated!", ToastType.Success);
+
+        await Task.Delay(3000);
+        Nav.NavigateTo("/bookings", true);
+    }
+
+    void HandleInvalidSubmit()
+    {
+        ToastService.ShowToast("Please fix the validation issues!", ToastType.Warning);
+    }
+}
