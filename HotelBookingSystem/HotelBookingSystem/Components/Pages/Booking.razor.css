@@ -8,5 +8,10 @@
 
     .checkboxItem {
         transform: scale(1.4);
+        pointer-events: none;
+    }
+
+    .checkboxItem:checked {
+        accent-color: green;
     }
 }

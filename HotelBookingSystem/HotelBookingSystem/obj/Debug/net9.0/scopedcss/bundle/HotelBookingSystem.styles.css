@@ -214,5 +214,10 @@ main[b-xq6mpftdbk] {
 
     .checkboxItem {
         transform: scale(1.4);
+        pointer-events: none;
+    }
+
+    .checkboxItem:checked[b-xc8be9dgl0] {
+        accent-color: green;
     }
 }

@@ -24,7 +24,7 @@ public class MemoryStore
             CheckOut = DateOnly.FromDateTime(DateTime.Today.AddDays(2)),
             RoomType = "Double",
             SpecialRequest = "Late check-in",
-            IsRecurring = false,
+            IsRecurring = true,
         });
     }
 }
