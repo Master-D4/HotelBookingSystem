@@ -2,29 +2,53 @@
 @rendermode InteractiveServer
 
 @using HotelBookingSystem.Services
-@inject PredictionEngine Engine
+@inject PredictionEngine Predictor
 
-<h3>ChatBot</h3>
+<h3 class="mb-4">Assistant Bot</h3>
 
-<InputText @bind-Value="question"></InputText>
+<div class="mb-3">
+    <InputText @bind-Value="userQuestion" class="form-control" placeholder="Ask about price or availability" />
+</div>
+
 <button class="btn btn-primary" @onclick="AskBot">ASk</button>
 
-<p><strong>Bot:</strong> @response</p>
+@if (!string.IsNullOrWhiteSpace(botResponse))
+{
+    <div class="alert alert-info mt-3">
+        <strong>Bot:</strong> @botResponse
+    </div>
+}
 
 @code {
-    string question = string.Empty;
-    string response = string.Empty;
+    string userQuestion = "";
+    string botResponse = "";
 
     void AskBot()
     {
-        Console.WriteLine("Called");
-        if (question.ToLower().Contains("price") && question.Contains("July", StringComparison.OrdinalIgnoreCase))
+        var lower = userQuestion.ToLower();
+
+        var months = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
+            .Where(m => !string.IsNullOrEmpty(m))
+            .ToList();
+
+        var month = months.FirstOrDefault(m => lower.Contains(m.ToLower()));
+        if (month == null)
         {
-            response = $"Predicted average price for July: {Engine.PredictAveragePrice(7):C}";
+            botResponse = "Please mention a month for prediction (e.g., July).";
+            return;
+        }
+
+        if (lower.Contains("availability"))
+        {
+            botResponse = Predictor.PredictAvailability(month);
+        }
+        else if (lower.Contains("price"))
+        {
+            botResponse = Predictor.PredictAveragePrice(month);
         }
         else
         {
-            response = "Sorry, I can only answer simple price or availability questions for now.";
+            botResponse = "I cam help with availability or price prediction. Try asking about those.";
         }
     }
 }
