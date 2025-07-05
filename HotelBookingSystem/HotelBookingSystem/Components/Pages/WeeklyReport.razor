@@ -1,52 +1,132 @@
 @page "/weeklyReport"
+@rendermode InteractiveServer
 
 @using HotelBookingSystem.Services
+@using HotelBookingSystem.Helpers
 @inject MemoryStore Store
+@inject ToastService ToastService
 
-<h3>WeeklyReport</h3>
+@using ChartJs.Blazor
+@using ChartJs.Blazor.ChartJS.BarChart
+@using ChartJs.Blazor.ChartJS.Common
+@using ChartJs.Blazor.ChartJS.Common.Enums
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Date</th>
-        <th># Bookings</th>
-        <th>With Special Request</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var day in GenerateReport())
-    {
+<h3 class="mb-4">Weekly Report</h3>
+
+<div class="d-flex align-items-center mb-3">
+    <button class="btn btn-outline-secondary me-2" @onclick="PreviousWeek">
+        Previous
+    </button>
+    <strong class="me-2">
+        @weekStart.ToFormattedDyd() TO @weekEnd.ToFormattedDyd()
+    </strong>
+    <button class="btn btn-outline-secondary" @onclick="NextWeek">
+        Next
+    </button>
+</div>
+
+@if (weeklyData.Any())
+{
+    <table class="table table-bordered">
+        <thead>
         <tr>
-            <td>@day.Date</td>
-            <td>@day.Count</td>
-            <td>@day.WithRequest</td>
+            <th>Day</th>
+            <th># of Bookings</th>
+            <th>Special Requests</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var entry in weeklyData)
+        {
+            <tr>
+                <td>
+                    @* @entry.Day *@
+                    @($"{entry.Day}, {entry.Date:dd MMM}")
+                </td>
+                <td>
+                    <strong>@entry.BookingCount</strong>
+                </td>
+                <td>
+                    @if (entry.SpecialRequests.Any())
+                    {
+                        <ul class="mb-0">
+                            @foreach (var request in entry.SpecialRequests)
+                            {
+                                <li>
+                                    @request
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <em class="text-muted">
+                            None
+                        </em>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        No booking found for this week.
+    </div>
+}
 
 @code {
-    public class DaySummary
+    private DateTime weekStart = DateTime.Today.StartOfWeek(DayOfWeek.Monday);
+    private DateTime weekEnd => weekStart.AddDays(6);
+
+    private List<WeeklySummary> weeklyData = new();
+
+    protected override void OnInitialized()
     {
-        public DateOnly Date { get; set; }
-        public int Count { get; set; }
-        public int WithRequest { get; set; }
+        LoadWeeklyData();
     }
 
-    private IEnumerable<DaySummary> GenerateReport()
+    void LoadWeeklyData()
     {
-        var start = DateOnly.FromDateTime(DateTime.Today);
-        return Enumerable.Range(0, 7).Select(i =>
-        {
-            var day = start.AddDays(i);
-            var bookings = Store.Bookings.Where(b => day >= b.CheckIn && day < b.CheckOut);
+        weeklyData.Clear();
 
-            return new DaySummary
+        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        {
+            DateOnly current = DateOnly.FromDateTime(weekStart.AddDays((int)day));
+            var bookings = Store.Bookings.Where(b => b.CheckIn == current).ToList();
+            
+            weeklyData.Add(new WeeklySummary
             {
-                Date = day,
-                Count = bookings.Count(),
-                WithRequest = bookings.Count(b => !string.IsNullOrEmpty(b.SpecialRequest))
-            };
-        });
+                Day = day.ToString(),
+                Date = current,
+                BookingCount = bookings.Count,
+                SpecialRequests = bookings
+                    .Where(b => !string.IsNullOrWhiteSpace(b.SpecialRequest))
+                    .Select(b => b.SpecialRequest!)
+                    .ToList()
+            });
+        }
+    }
+
+    public class WeeklySummary
+    {
+        public string Day { get; set; } = "";
+        public DateOnly Date { get; set; }
+        public int BookingCount { get; set; }
+        public List<string> SpecialRequests { get; set; } = new ();
+    }
+
+    void PreviousWeek()
+    {
+        weekStart = weekStart.AddDays(-7);
+        LoadWeeklyData();
+    }
+
+    void NextWeek()
+    {
+        weekStart = weekStart.AddDays(7);
+        LoadWeeklyData();
     }
 }
