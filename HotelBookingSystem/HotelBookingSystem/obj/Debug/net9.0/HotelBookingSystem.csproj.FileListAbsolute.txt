@@ -73,8 +73,6 @@
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/ref/HotelBookingSystem.dll
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/scopedcss/Components/Pages/Booking.razor.rz.scp.css
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/scopedcss/Components/Pages/RoomTypes.razor.rz.scp.css
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-ai2hr19t2z.gz
-/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-ai2hr19t2z.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/bin/Debug/net9.0/Blazorise.dll
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/bin/Debug/net9.0/Blazorise.Charts.dll
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/bin/Debug/net9.0/Blazorise.Licensing.dll
@@ -141,3 +139,5 @@
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/v79iuv3guu-s8jfu0n0m8.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/xkgwttcxnt-yuah26ljhm.gz
 /Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/HotelBoo.F29BE982.Up2Date
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/4mktbohur2-7t3x5p54g8.gz
+/Users/dinethdissanayake/Documents/Projects-IIT/Project/HotelBookingSystem/HotelBookingSystem/HotelBookingSystem/obj/Debug/net9.0/compressed/2p03ppjz2e-7t3x5p54g8.gz

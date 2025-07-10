@@ -23,23 +23,31 @@ public class PredictionEngine
             : $"Rooms may be limited in {monthName}. Consider booking early.";
     }
 
-    //Method For predict average price - for a given month
-    public string PredictAveragePrice(string monthName)
+    //Method For predict average price - for a given month & room type
+    public string PredictAveragePrice(string monthName, string? roomType = null)
     {
         if(!DateTime.TryParseExact(monthName, "MMMM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
-            return "Sorry, I couldn't understand the month name";
+            return "Hmm... Sorry, I couldn't understand the month name";
         
         int month =  parsedMonth.Month;
+        
+        var bookings = _store.Bookings.Where(b => b.CheckIn.Month == month);
 
-        var prices = _store.RoomTypes
-            .SelectMany(rt => _store.Bookings
-                .Where(b => b.CheckIn.Month == month && b.RoomType == rt.Name)
-                .Select(_ => rt.BasePrice));
+        if (!string.IsNullOrEmpty(roomType))
+        {
+            bookings = bookings.Where(b => b.RoomType.Equals(roomType, StringComparison.OrdinalIgnoreCase));
+        }
+        
+        var prices = bookings
+            .Join(_store.RoomTypes,
+                b => b.RoomType,
+                rt => rt.Name,
+                (b, rt) => rt.BasePrice);
         
         if(!prices.Any())
-            return $"No past booking data available for {monthName}.";
+            return $"I couldn't find enough booking data for {(roomType ?? "any room")} in {monthName}.";
             
         decimal avg = prices.Average();
-        return $"The predicted average price in {monthName} is {avg:C}.";
+        return $"The average price for {(roomType ?? "all rooms")} in {monthName} is {avg:C}.";
     }
 }

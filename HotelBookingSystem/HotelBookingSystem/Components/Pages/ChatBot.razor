@@ -3,52 +3,81 @@
 
 @using HotelBookingSystem.Services
 @inject PredictionEngine Predictor
+@inject MemoryStore Store
 
-<h3 class="mb-4">Assistant Bot</h3>
+<h3 class="mb-4">Chat with Assistant Bot</h3>
 
-<div class="mb-3">
-    <InputText @bind-Value="userQuestion" class="form-control" placeholder="Ask about price or availability" />
+<div class="card p-3 mb-3" style="max-height: 400px; overflow-y: auto">
+    @foreach (var msg in chatHistory)
+    {
+        <div class="mb-2">
+            <strong>You:</strong>
+            @msg.Question
+            <div>
+                <strong>Bot:</strong>
+                @msg.Response
+            </div>
+        </div>
+    }
 </div>
 
-<button class="btn btn-primary" @onclick="AskBot">ASk</button>
-
-@if (!string.IsNullOrWhiteSpace(botResponse))
-{
-    <div class="alert alert-info mt-3">
-        <strong>Bot:</strong> @botResponse
-    </div>
-}
+<div class="input-group">
+    <InputText @bind-Value="userQuestion" class="form-control" placeholder="Ask something like 'Price for Deluxe in July'" />
+    <button class="btn btn-primary" @onclick="AskBot">
+        Ask
+    </button>
+</div>
 
 @code {
     string userQuestion = "";
-    string botResponse = "";
+    List<ChatEntry> chatHistory = new();
 
     void AskBot()
     {
-        var lower = userQuestion.ToLower();
+        Console.WriteLine("hi");
+        if (string.IsNullOrWhiteSpace(userQuestion)) return;
 
+        string lower = userQuestion.ToLower();
+        string response = "Hmm, I didn't understand that. Try asking about availability or price in a specific month.";
+        
+        //Month extraction
         var months = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
-            .Where(m => !string.IsNullOrEmpty(m))
-            .ToList();
+            .Where(m => !string.IsNullOrEmpty(m)).ToList();
 
-        var month = months.FirstOrDefault(m => lower.Contains(m.ToLower()));
-        if (month == null)
-        {
-            botResponse = "Please mention a month for prediction (e.g., July).";
-            return;
-        }
+        var matchedMonth = months.FirstOrDefault(m => lower.Contains(m.ToLower()));
+        
+        //Room type extraction (form added list)
+        var roomTypes = Store.RoomTypes.Select(rt => rt.Name).ToList();
+        var matchedRoom = roomTypes.FirstOrDefault(rt => lower.Contains(rt.ToLower()));
 
-        if (lower.Contains("availability"))
+        if (matchedMonth != null)
         {
-            botResponse = Predictor.PredictAvailability(month);
+            if (lower.Contains("availability"))
+            {
+                response = Predictor.PredictAvailability(matchedMonth);
+            }
+            else if (lower.Contains("price"))
+            {
+                response = Predictor.PredictAveragePrice(matchedMonth, matchedRoom);
+            }
+            else
+            {
+                response = $"Are you asking about availability or price for {matchedMonth}? Try rephrasing.";
+            }
         }
-        else if (lower.Contains("price"))
+        
+        chatHistory.Add(new ChatEntry
         {
-            botResponse = Predictor.PredictAveragePrice(month);
-        }
-        else
-        {
-            botResponse = "I cam help with availability or price prediction. Try asking about those.";
-        }
+            Question = userQuestion,
+            Response = response
+        });
+
+        userQuestion = "";
+    }
+
+    public class ChatEntry
+    {
+        public string Question { get; set; } = "";
+        public string Response { get; set; } = "";
     }
 }
