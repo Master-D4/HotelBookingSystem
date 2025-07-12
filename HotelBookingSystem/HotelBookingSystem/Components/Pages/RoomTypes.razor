@@ -136,7 +136,10 @@
                 return;
             }
             
-            Store.RoomTypes.Add(new Models.RoomType { Name = roomTypeModal.Name });
+            Store.RoomTypes.Add(new Models.RoomType {
+                Name = roomTypeModal.Name,
+                BasePrice = roomTypeModal.BasePrice
+            });
             ToastService.ShowToast("Room type added successfully!", ToastType.Success);
         }
 
