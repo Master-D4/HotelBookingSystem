@@ -62,7 +62,7 @@ public class PredictionEngine
             return (DateOnly.FromDateTime(start), DateOnly.FromDateTime(start.AddDays(6)));
         }
         
-        // Default value set to today(value), if unknown
+        // Default value set to today, if unknown
         var d = DateOnly.FromDateTime(today);
         return (d, d);
     }
