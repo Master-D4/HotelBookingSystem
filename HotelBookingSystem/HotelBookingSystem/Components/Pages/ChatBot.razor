@@ -1,6 +1,8 @@
 @page "/chat"
 @rendermode InteractiveServer
 
+@using System.Globalization
+@using HotelBookingSystem.Models
 @using HotelBookingSystem.Services
 @inject PredictionEngine Predictor
 @inject MemoryStore Store
@@ -22,62 +24,100 @@
 </div>
 
 <div class="input-group">
-    <InputText @bind-Value="userQuestion" class="form-control" placeholder="Ask something like 'Price for Deluxe in July'" />
+    <InputText @bind-Value="userQuestion" class="form-control" placeholder="Ask about room availability or prices.." />
     <button class="btn btn-primary" @onclick="AskBot">
         Ask
     </button>
 </div>
 
 @code {
-    string userQuestion = "";
-    List<ChatEntry> chatHistory = new();
+    private string userQuestion = string.Empty;
+    private List<ChatEntry> chatHistory = new();
 
-    void AskBot()
+    class ChatEntry
     {
-        Console.WriteLine("hi");
-        if (string.IsNullOrWhiteSpace(userQuestion)) return;
+        public string Question { get; set; } = "";
+        public string Response { get; set; } = "";
+    }
 
-        string lower = userQuestion.ToLower();
-        string response = "Hmm, I didn't understand that. Try asking about availability or price in a specific month.";
-        
-        //Month extraction
-        var months = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
-            .Where(m => !string.IsNullOrEmpty(m)).ToList();
+    private RoomType? MatchRoomType(string input)
+    {
+        return Store.RoomTypes
+            .FirstOrDefault(rt => input.Contains(rt.Name, StringComparison.OrdinalIgnoreCase));
+    }
 
-        var matchedMonth = months.FirstOrDefault(m => lower.Contains(m.ToLower()));
+    private async Task AskBot()
+    {
+        if (string.IsNullOrWhiteSpace(userQuestion))
+            return;
         
-        //Room type extraction (form added list)
-        var roomTypes = Store.RoomTypes.Select(rt => rt.Name).ToList();
-        var matchedRoom = roomTypes.FirstOrDefault(rt => lower.Contains(rt.ToLower()));
-
-        if (matchedMonth != null)
-        {
-            if (lower.Contains("availability"))
-            {
-                response = Predictor.PredictAvailability(matchedMonth);
-            }
-            else if (lower.Contains("price"))
-            {
-                response = Predictor.PredictAveragePrice(matchedMonth, matchedRoom);
-            }
-            else
-            {
-                response = $"Are you asking about availability or price for {matchedMonth}? Try rephrasing.";
-            }
-        }
-        
+        string response = GenerateResponse(userQuestion.Trim());
         chatHistory.Add(new ChatEntry
         {
             Question = userQuestion,
             Response = response
         });
+        userQuestion = string.Empty;
 
-        userQuestion = "";
+        await InvokeAsync(StateHasChanged);
     }
 
-    public class ChatEntry
+    private string GenerateResponse(string question)
     {
-        public string Question { get; set; } = "";
-        public string Response { get; set; } = "";
+        // Handle price prediction
+        if (question.Contains("price", StringComparison.OrdinalIgnoreCase))
+        {
+            var monthMatch = GetMonthFromQuestion(question);
+            var roomMatch = MatchRoomType(question);
+
+            int? monthIndex = monthMatch?.Item2; // get the index
+            string? roomType = roomMatch?.Name;
+
+            var avgPrice = Predictor.PredictAveragePrice(monthIndex, roomType);
+
+            if (avgPrice == 0)
+                return "Sorry, I couldn't find any matching records to calculate the price.";
+            
+            if(roomType != null && monthMatch != null)
+                return $"The average price for {roomType} room in {monthMatch?.Item1} is {avgPrice:C}.";
+            else if(roomType != null)
+                return $"The average price for {roomType} room is {avgPrice:C}.";
+            else if(monthMatch != null)
+                return $"The average price in {monthMatch?.Item1} is {avgPrice:C}.";
+            else
+                return $"The average price is {avgPrice:C}.";
+        }
+        
+        // Handle availability prediction
+        if (question.Contains("availability", StringComparison.OrdinalIgnoreCase) || question.Contains("available", StringComparison.OrdinalIgnoreCase))
+        {
+            var dateRange = Predictor.GetDateRangeFromPhrase(question);
+            var matchedType = MatchRoomType(question);
+
+            var availabilityRatio = Predictor.PredictRoomAvailability(dateRange.Start, dateRange.End, matchedType?.Name);
+            var precentFree = Math.Round((1 - availabilityRatio) * 100);
+
+            if (matchedType != null)
+                return $"Estimated availability for {matchedType.Name} room from {dateRange.Start:dd MMM} to {dateRange.End:dd MMM} is {precentFree}% free.";
+            else
+                return $"Estimated general availability from {dateRange.Start:dd MMM} to {dateRange.End:dd MMM} is {precentFree}% free.";
+        }
+
+        return "Hmm, I didn't understand that. Try asking about price or availability, and include room type or month if you wish.";
+    }
+
+    private (string, int)? GetMonthFromQuestion(string input)
+    {
+        var months = DateTimeFormatInfo.InvariantInfo.MonthNames
+            .Where(m => !string.IsNullOrWhiteSpace(m))
+            .Select((name, index) => (Name: name, Index: index + 1));
+
+        foreach (var (name, index) in months)
+        {
+            if (input.Contains(name, StringComparison.OrdinalIgnoreCase))
+                return (name, index);
+        }
+        
+        return null;
     }
 }

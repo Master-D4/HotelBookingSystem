@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace HotelBookingSystem.Services;
 
 public class PredictionEngine
@@ -9,45 +11,59 @@ public class PredictionEngine
         _store = store;
     }
 
-    //Method for predict rooms availability - for a given month
-    public string PredictAvailability(string monthName)
+    public decimal PredictAveragePrice(int? month = null, string? roomType = null)
     {
-        if (!DateTime.TryParseExact(monthName, "MMMM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
-            return "Sorry, I couldn't understand the month name";
+        var bookings = _store.Bookings.AsQueryable();
         
-        int month =  parsedMonth.Month;
+        if(month.HasValue)
+            bookings = bookings.Where(b => b.CheckIn.Month == month.Value);
 
-        int count = _store.Bookings.Count(b => b.CheckIn.Month == month);
-        return count < 5
-            ? $"Rooms are likely available in {monthName}."
-            : $"Rooms may be limited in {monthName}. Consider booking early.";
-    }
-
-    //Method For predict average price - for a given month & room type
-    public string PredictAveragePrice(string monthName, string? roomType = null)
-    {
-        if(!DateTime.TryParseExact(monthName, "MMMM", null, System.Globalization.DateTimeStyles.None, out DateTime parsedMonth))
-            return "Hmm... Sorry, I couldn't understand the month name";
-        
-        int month =  parsedMonth.Month;
-        
-        var bookings = _store.Bookings.Where(b => b.CheckIn.Month == month);
-
-        if (!string.IsNullOrEmpty(roomType))
-        {
+        if (!string.IsNullOrWhiteSpace(roomType))
             bookings = bookings.Where(b => b.RoomType.Equals(roomType, StringComparison.OrdinalIgnoreCase));
+
+        if (!bookings.Any())
+            return 0;
+
+        var prices = new List<decimal>();
+        foreach (var b in bookings)
+        {
+            var room = _store.RoomTypes.FirstOrDefault(rt => rt.Name.Equals(b.RoomType, StringComparison.OrdinalIgnoreCase));
+            if (room != null)
+                prices.Add(room.BasePrice);
         }
         
-        var prices = bookings
-            .Join(_store.RoomTypes,
-                b => b.RoomType,
-                rt => rt.Name,
-                (b, rt) => rt.BasePrice);
+        return prices.Any() ? prices.Average() : 0;
+    }
+
+    public double PredictRoomAvailability(DateOnly startDate, DateOnly endDate, string? roomType = null)
+    {
+        var relevantBookings = _store.Bookings
+            .Where(b => b.CheckIn <= endDate && b.CheckOut >= startDate);
+
+        if (!string.IsNullOrWhiteSpace(roomType))
+            relevantBookings =
+                relevantBookings.Where(b => b.RoomType.Equals(roomType, StringComparison.OrdinalIgnoreCase));
+
+        const int totalRooms = 10; // Currently set room cout as 10 for each type in the system
+        return (double)relevantBookings.Count() / totalRooms;
+    }
+
+    public (DateOnly Start, DateOnly End) GetDateRangeFromPhrase(string phrase)
+    {
+        var today = DateTime.Today;
+        if (phrase.Contains("next week"))
+        {
+            var start = today.AddDays(7 - (int)today.DayOfWeek);
+            return (DateOnly.FromDateTime(start), DateOnly.FromDateTime(start.AddDays(6)));
+        }
+        if (phrase.Contains("this week"))
+        {
+            var start = today.AddDays(-(int)today.DayOfWeek);
+            return (DateOnly.FromDateTime(start), DateOnly.FromDateTime(start.AddDays(6)));
+        }
         
-        if(!prices.Any())
-            return $"I couldn't find enough booking data for {(roomType ?? "any room")} in {monthName}.";
-            
-        decimal avg = prices.Average();
-        return $"The average price for {(roomType ?? "all rooms")} in {monthName} is {avg:C}.";
+        // Default value set to today(value), if unknown
+        var d = DateOnly.FromDateTime(today);
+        return (d, d);
     }
 }
